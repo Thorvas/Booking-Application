@@ -1,14 +1,14 @@
-package com.booking.booking.booking;
+package com.event.event.event;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/booking")
-public class BookingController {
+@RequestMapping(value = "/event")
+public class EventController {
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getBookings(){
+    public String getEvents(){
 
         return "Get all my bookings.";
     }
@@ -20,21 +20,20 @@ public class BookingController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String createBooking(@RequestBody BookingDTO bookingDTO) {
+    public String createEvent(@RequestBody EventDTO bookingDTO) {
 
         return "Create specific booking";
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String updateBooking(@PathVariable Long id, @RequestBody BookingDTO bookingDTO) {
+    public String updateEvent(@PathVariable Long id, @RequestBody EventDTO bookingDTO) {
 
         return "Update specific booking";
     }
 
     @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String deleteBooking(@PathVariable Long id) {
+    public String deleteEvent(@PathVariable Long id) {
 
         return "Delete specific booking";
     }
-
 }
