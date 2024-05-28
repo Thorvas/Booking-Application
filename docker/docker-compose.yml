@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  postgres_booking:
+    image: postgres:latest
+    container_name: postgres_booking
+    environment:
+      POSTGRES_DB: booking_db
+      POSTGRES_USER: booking_user
+      POSTGRES_PASSWORD: booking_password
+    ports:
+      - "5432:5432"
+    networks:
+      - backend
+
+  postgres_event:
+    image: postgres:latest
+    container_name: postgres_event
+    environment:
+      POSTGRES_DB: event_db
+      POSTGRES_USER: event_user
+      POSTGRES_PASSWORD: event_password
+    ports:
+      - "5433:5432"
+    networks:
+      - backend
+
+  postgres_user:
+    image: postgres:latest
+    container_name: postgres_user
+    environment:
+      POSTGRES_DB: user_db
+      POSTGRES_USER: user_user
+      POSTGRES_PASSWORD: user_password
+    ports:
+      - "5434:5432"
+    networks:
+      - backend
+
+  postgres_notification:
+    image: postgres:latest
+    container_name: postgres_notification
+    environment:
+      POSTGRES_DB: notification_db
+      POSTGRES_USER: notification_user
+      POSTGRES_PASSWORD: notification_password
+    ports:
+      - "5435:5432"
+    networks:
+      - backend
+
+  postgres_payment:
+    image: postgres:latest
+    container_name: postgres_payment
+    environment:
+      POSTGRES_DB: payment_db
+      POSTGRES_USER: payment_user
+      POSTGRES_PASSWORD: payment_password
+    ports:
+      - "5436:5432"
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
