@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: booking
+          uri: lb://booking
+          predicates:
+            - Path=/booking/**
+        - id: event
+          uri: lb://event
+          predicates:
+            - Path=/event/**
+        - id: notification
+          uri: lb://notification
+          predicates:
+            - Path=/notification/**
+        - id: payment
+          uri: lb://payment
+          predicates:
+            - Path=/payment/**
+        - id: user
+          uri: lb://user
+          predicates:
+            - Path=/user/**
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+server:
+  port: 8090
