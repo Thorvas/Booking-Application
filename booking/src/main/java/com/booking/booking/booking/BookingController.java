@@ -1,40 +1,57 @@
 package com.booking.booking.booking;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/booking")
 public class BookingController {
 
-    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getBookings(){
+    @Autowired
+    private BookingService bookingService;
 
-        return "Get all my bookings.";
+    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<BookingDTO>> getBookings(){
+
+        List<BookingDTO> booking = bookingService.getAllBookings();
+
+        return new ResponseEntity<>(booking, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getBooking(@PathVariable Long id) {
+    public ResponseEntity<BookingDTO> getBooking(@PathVariable Long id) {
 
-        return "Return specific booking.";
+        BookingDTO booking = bookingService.getBooking(id);
+
+        return new ResponseEntity<>(booking, HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String createBooking(@RequestBody BookingDTO bookingDTO) {
+    public ResponseEntity<BookingDTO> createBooking(@RequestBody BookingDTO bookingDTO) {
 
-        return "Create specific booking";
+        BookingDTO booking = bookingService.createBooking(bookingDTO);
+
+        return new ResponseEntity<>(booking, HttpStatus.OK);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String updateBooking(@PathVariable Long id, @RequestBody BookingDTO bookingDTO) {
+    public ResponseEntity<BookingDTO> updateBooking(@PathVariable Long id, @RequestBody BookingDTO bookingDTO) {
 
-        return "Update specific booking";
+        BookingDTO booking = bookingService.updateBooking(bookingDTO, id);
+
+        return new ResponseEntity<>(booking, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String deleteBooking(@PathVariable Long id) {
+    public ResponseEntity<BookingDTO> deleteBooking(@PathVariable Long id) {
 
-        return "Delete specific booking";
+        BookingDTO booking = bookingService.deleteBooking(id);
+
+        return new ResponseEntity<>(booking, HttpStatus.OK);
     }
-
 }

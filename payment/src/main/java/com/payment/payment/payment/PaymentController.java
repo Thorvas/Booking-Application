@@ -1,39 +1,57 @@
 package com.payment.payment.payment;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/payment")
 public class PaymentController {
 
-    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getPayments(){
+    @Autowired
+    private PaymentService paymentService;
 
-        return "Get all my bookings.";
+    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<PaymentDTO>> getPayments(){
+
+        List<PaymentDTO> payment = paymentService.getAllPayments();
+
+        return new ResponseEntity<>(payment, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getPayment(@PathVariable Long id) {
+    public ResponseEntity<PaymentDTO> getPayment(@PathVariable Long id) {
 
-        return "Return specific booking.";
+        PaymentDTO payment = paymentService.getPayment(id);
+
+        return new ResponseEntity<>(payment, HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String createPayment(@RequestBody PaymentDTO paymentDTO) {
+    public ResponseEntity<PaymentDTO> createPayment(@RequestBody PaymentDTO paymentDTO) {
 
-        return "Create specific booking";
+        PaymentDTO payment = paymentService.createPayment(paymentDTO);
+
+        return new ResponseEntity<>(payment, HttpStatus.OK);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String updatePayment(@PathVariable Long id, @RequestBody PaymentDTO paymentDTO) {
+    public ResponseEntity<PaymentDTO> updatePayment(@PathVariable Long id, @RequestBody PaymentDTO paymentDTO) {
 
-        return "Update specific booking";
+        PaymentDTO payment = paymentService.updatePayment(paymentDTO, id);
+
+        return new ResponseEntity<>(payment, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String deletePayment(@PathVariable Long id) {
+    public ResponseEntity<PaymentDTO> deletePayment(@PathVariable Long id) {
 
-        return "Delete specific booking";
+        PaymentDTO payment = paymentService.deletePayment(id);
+
+        return new ResponseEntity<>(payment, HttpStatus.OK);
     }
 }

@@ -1,39 +1,57 @@
 package com.event.event.event;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/event")
 public class EventController {
 
-    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getEvents(){
+    @Autowired
+    private EventService eventService;
 
-        return "Get all my bookings.";
+    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<EventDTO>> getEvents(){
+
+        List<EventDTO> event = eventService.getAllEvents();
+
+        return new ResponseEntity<>(event, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getBooking(@PathVariable Long id) {
+    public ResponseEntity<EventDTO> getEvent(@PathVariable Long id) {
 
-        return "Return specific booking.";
+        EventDTO event = eventService.getEvent(id);
+
+        return new ResponseEntity<>(event, HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String createEvent(@RequestBody EventDTO bookingDTO) {
+    public ResponseEntity<EventDTO> createEvent(@RequestBody EventDTO eventDTO) {
 
-        return "Create specific booking";
+        EventDTO event = eventService.createEvent(eventDTO);
+
+        return new ResponseEntity<>(event, HttpStatus.OK);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String updateEvent(@PathVariable Long id, @RequestBody EventDTO bookingDTO) {
+    public ResponseEntity<EventDTO> updateEvent(@PathVariable Long id, @RequestBody EventDTO eventDTO) {
 
-        return "Update specific booking";
+        EventDTO event = eventService.updateEvent(eventDTO, id);
+
+        return new ResponseEntity<>(event, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String deleteEvent(@PathVariable Long id) {
+    public ResponseEntity<EventDTO> deleteEvent(@PathVariable Long id) {
 
-        return "Delete specific booking";
+        EventDTO event = eventService.deleteEvent(id);
+
+        return new ResponseEntity<>(event, HttpStatus.OK);
     }
 }
