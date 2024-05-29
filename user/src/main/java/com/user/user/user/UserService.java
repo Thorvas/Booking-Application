@@ -20,14 +20,14 @@ public class UserService {
 
     public UserDTO getUser(Long id) {
 
-        UserModel user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found."));
+        UserModel user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found."));
 
         return convertToDTO(user);
     }
 
     public UserDTO deleteUser(Long id) {
 
-        UserModel user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found."));
+        UserModel user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found."));
 
         userRepository.delete(user);
 
@@ -46,7 +46,7 @@ public class UserService {
 
     public UserDTO updateUser(UserDTO userDTO, Long id) {
 
-        UserModel user = userRepository.findById(id).orElseThrow( () -> new RuntimeException("User not found."));
+        UserModel user = userRepository.findById(id).orElseThrow( () -> new UserNotFoundException("User not found."));
 
         user.setNickname(userDTO.getNickname());
 

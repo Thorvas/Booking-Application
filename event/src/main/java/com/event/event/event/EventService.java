@@ -19,14 +19,14 @@ public class EventService {
 
     public EventDTO getEvent(Long id) {
 
-        EventModel event = eventRepository.findById(id).orElseThrow(() -> new RuntimeException("Event not found."));
+        EventModel event = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException("Event not found."));
 
         return convertToDTO(event);
     }
 
     public EventDTO deleteEvent(Long id) {
 
-        EventModel event = eventRepository.findById(id).orElseThrow(() -> new RuntimeException("Event not found."));
+        EventModel event = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException("Event not found."));
 
         eventRepository.delete(event);
 
@@ -45,7 +45,7 @@ public class EventService {
 
     public EventDTO updateEvent(EventDTO EventDTO, Long id) {
 
-        EventModel event = eventRepository.findById(id).orElseThrow( () -> new RuntimeException("Event not found."));
+        EventModel event = eventRepository.findById(id).orElseThrow( () -> new EventNotFoundException("Event not found."));
 
         event.setDate(EventDTO.getDate());
         event.setName(EventDTO.getName());
