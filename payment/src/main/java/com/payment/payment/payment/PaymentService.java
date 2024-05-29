@@ -20,14 +20,14 @@ public class PaymentService {
 
     public PaymentDTO getPayment(Long id) {
 
-        PaymentModel payment = paymentRepository.findById(id).orElseThrow(() -> new RuntimeException("Payment not found."));
+        PaymentModel payment = paymentRepository.findById(id).orElseThrow(() -> new PaymentNotFoundException("Payment not found."));
 
         return convertToDTO(payment);
     }
 
     public PaymentDTO deletePayment(Long id) {
 
-        PaymentModel payment = paymentRepository.findById(id).orElseThrow(() -> new RuntimeException("Payment not found."));
+        PaymentModel payment = paymentRepository.findById(id).orElseThrow(() -> new PaymentNotFoundException("Payment not found."));
 
         paymentRepository.delete(payment);
 
@@ -46,7 +46,7 @@ public class PaymentService {
 
     public PaymentDTO updatePayment(PaymentDTO paymentDTO, Long id) {
 
-        PaymentModel payment = paymentRepository.findById(id).orElseThrow( () -> new RuntimeException("Payment not found."));
+        PaymentModel payment = paymentRepository.findById(id).orElseThrow( () -> new PaymentNotFoundException("Payment not found."));
 
         payment.setAmount(paymentDTO.getAmount());
         payment.setTitle(paymentDTO.getTitle());

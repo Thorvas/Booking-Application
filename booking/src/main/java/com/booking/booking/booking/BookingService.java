@@ -20,14 +20,14 @@ public class BookingService {
 
     public BookingDTO getBooking(Long id) {
 
-        BookingModel booking = bookingRepository.findById(id).orElseThrow(() -> new RuntimeException("Booking not found."));
+        BookingModel booking = bookingRepository.findById(id).orElseThrow(() -> new BookingNotFoundException("Booking not found."));
 
         return convertToDTO(booking);
     }
 
     public BookingDTO deleteBooking(Long id) {
 
-        BookingModel booking = bookingRepository.findById(id).orElseThrow(() -> new RuntimeException("Booking not found."));
+        BookingModel booking = bookingRepository.findById(id).orElseThrow(() -> new BookingNotFoundException("Booking not found."));
 
         bookingRepository.delete(booking);
 
@@ -46,7 +46,7 @@ public class BookingService {
 
     public BookingDTO updateBooking(BookingDTO bookingDTO, Long id) {
 
-        BookingModel booking = bookingRepository.findById(id).orElseThrow( () -> new RuntimeException("Booking not found."));
+        BookingModel booking = bookingRepository.findById(id).orElseThrow( () -> new BookingNotFoundException("Booking not found."));
 
         booking.setDate(bookingDTO.getDate());
         booking.setName(bookingDTO.getName());
