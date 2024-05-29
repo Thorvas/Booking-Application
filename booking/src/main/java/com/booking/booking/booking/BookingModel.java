@@ -1,7 +1,9 @@
 package com.booking.booking.booking;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
+@Data
 @Entity
 public class BookingModel {
 
