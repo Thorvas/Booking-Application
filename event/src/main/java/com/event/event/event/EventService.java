@@ -1,6 +1,7 @@
 package com.event.event.event;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,12 @@ public class EventService {
         return eventRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .toList();
+    }
+
+    @KafkaListener(topics = "example_topic", groupId = "example_group")
+    public void listen(List<EventDTO> message) {
+        System.out.println("Message received");
+        System.out.println(message);
     }
 
     public EventDTO getEvent(Long id) {
