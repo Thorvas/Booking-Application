@@ -1,5 +1,7 @@
 package com.booking.booking.booking;
 
+import com.booking.booking.event.Event;
+import com.booking.booking.event.EventDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,6 +31,14 @@ public class BookingController {
         BookingDTO booking = bookingService.getBooking(id);
 
         return new ResponseEntity<>(booking, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}/event", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<EventDTO> getEvent(@PathVariable Long id) {
+
+        EventDTO event = bookingService.getEventForBooking(id);
+
+        return new ResponseEntity<>(event, HttpStatus.OK);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

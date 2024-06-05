@@ -6,6 +6,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 @Entity
 public class EventModel {
@@ -13,9 +15,9 @@ public class EventModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    private Long authorId;
     private String name;
-    private String date;
+    private LocalDate date;
 
 
 }

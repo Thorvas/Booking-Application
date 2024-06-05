@@ -1,5 +1,7 @@
 package com.event.event.event;
 
+import com.example.dto.EventRequestDTO;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,14 +18,10 @@ public class EventController {
     @Autowired
     private EventService eventService;
 
-    @Autowired
-    private KafkaTemplate<String, Object> kafkaTemplate;
-
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<EventDTO>> getEvents(){
 
         List<EventDTO> event = eventService.getAllEvents();
-        kafkaTemplate.send("example_topic", "key", event);
 
         return new ResponseEntity<>(event, HttpStatus.OK);
     }

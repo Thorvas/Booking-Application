@@ -1,4 +1,4 @@
-package com.event.event.event;
+package com.booking.booking.event;
 
 import lombok.Data;
 
@@ -8,7 +8,6 @@ import java.time.LocalDate;
 public class EventDTO {
 
     private Long id;
-    private Long authorId;
     private String name;
     private LocalDate date;
 }

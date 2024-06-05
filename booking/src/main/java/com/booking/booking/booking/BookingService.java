@@ -1,6 +1,11 @@
 package com.booking.booking.booking;
 
+import com.booking.booking.event.Event;
+import com.booking.booking.event.EventDTO;
+import com.booking.booking.event.EventRepository;
+import com.example.dto.BookingRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,6 +15,9 @@ public class BookingService {
 
     @Autowired
     private BookingRepository bookingRepository;
+
+    @Autowired
+    private EventRepository eventRepository;
 
     public List<BookingDTO> getAllBookings() {
 
@@ -34,11 +42,30 @@ public class BookingService {
         return convertToDTO(booking);
     }
 
+    public EventDTO getEventForBooking(Long bookingId) {
+
+        BookingModel booking = bookingRepository.findById(bookingId).orElseThrow(() -> new BookingNotFoundException("Booking not found."));
+
+        Event event = eventRepository.findById(booking.getEventId()).orElseThrow(() -> new RuntimeException("There is no such event in database."));
+
+        EventDTO eventDTO = new EventDTO();
+
+        eventDTO.setName(event.getName());
+        eventDTO.setId(event.getId());
+        eventDTO.setDate(event.getDate());
+
+        return eventDTO;
+    }
+
     public BookingDTO createBooking(BookingDTO bookingDTO) {
 
         BookingModel bookingModel = convertToBooking(bookingDTO);
+        BookingRequestDTO requestDTO = new BookingRequestDTO();
 
-        bookingRepository.save(bookingModel);
+        bookingModel = bookingRepository.save(bookingModel);
+
+        requestDTO.setBookingId(bookingModel.getId());
+        requestDTO.setEventId(bookingDTO.getEventId());
 
         return convertToDTO(bookingModel);
 
@@ -47,9 +74,6 @@ public class BookingService {
     public BookingDTO updateBooking(BookingDTO bookingDTO, Long id) {
 
         BookingModel booking = bookingRepository.findById(id).orElseThrow( () -> new BookingNotFoundException("Booking not found."));
-
-        booking.setDate(bookingDTO.getDate());
-        booking.setName(bookingDTO.getName());
 
         bookingRepository.save(booking);
 
@@ -61,8 +85,7 @@ public class BookingService {
         BookingDTO bookingDTO = new BookingDTO();
 
         bookingDTO.setId(bookingModel.getId());
-        bookingDTO.setDate(bookingModel.getDate());
-        bookingDTO.setName(bookingModel.getName());
+        bookingDTO.setEventId(bookingDTO.getEventId());
 
         return bookingDTO;
     }
@@ -71,8 +94,7 @@ public class BookingService {
 
         BookingModel bookingModel = new BookingModel();
 
-        bookingModel.setDate(bookingDTO.getDate());
-        bookingModel.setName(bookingDTO.getName());
+        bookingModel.setEventId(bookingDTO.getEventId());
 
         return bookingModel;
     }
