@@ -66,55 +66,25 @@ public class EventService {
     }
 
     public void propagateEventDeleted(EventModel event) {
-
-        EventDTO requestDTO = convertToDTO(event);
-        String request = null;
-
-        try {
-            request = objectMapper.writeValueAsString(requestDTO);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        kafkaTemplate.send("event_deleted", request);
+        propagate(event, "event_deleted");
     }
 
     public void propagateEventCreated(EventModel event) {
-
-        EventDTO requestDTO = convertToDTO(event);
-        String request = null;
-
-        requestDTO.setId(event.getId());
-        requestDTO.setName(event.getName());
-        requestDTO.setDate(event.getDate());
-        requestDTO.setAuthorId(event.getAuthorId());
-
-        try {
-            request = objectMapper.writeValueAsString(requestDTO);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        kafkaTemplate.send("event_created", request);
+        propagate(event, "event_created");
     }
 
     public void propagateEventUpdated(EventModel event) {
+        propagate(event, "event_updated");
+    }
 
-        EventDTO requestDTO = convertToDTO(event);
+    private void propagate(EventModel event, String topic) {
 
-        requestDTO.setId(event.getId());
-        requestDTO.setName(event.getName());
-        requestDTO.setDate(event.getDate());
-        requestDTO.setAuthorId(event.getAuthorId());
-
-        String request = null;
         try {
-            request = objectMapper.writeValueAsString(requestDTO);
+            String request = objectMapper.writeValueAsString(convertToDTO(event));
+            kafkaTemplate.send(topic, request);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        kafkaTemplate.send("event_updated", request);
     }
 
     private EventDTO convertToDTO(EventModel eventModel) {

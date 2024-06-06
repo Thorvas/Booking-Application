@@ -1,6 +1,7 @@
 package com.booking.booking.event;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -38,15 +39,12 @@ public class EventService {
 
     @KafkaListener(topics = "event_updated", groupId = "booking_listeners")
     public void updateEvent(String request) {
-
         try {
             Event eventRequestDTO = objectMapper.readValue(request, Event.class);
 
-            Event event = eventRepository.findById(eventRequestDTO.getId()).orElseThrow(() -> new RuntimeException("No such event found."));
+            Event event = eventRepository.findById(eventRequestDTO.getId()).orElseThrow(() -> new EventNotFoundException("No such event found."));
 
-            event.setName(eventRequestDTO.getName());
-            event.setDate(eventRequestDTO.getDate());
-            event.setAuthorId(eventRequestDTO.getAuthorId());
+            BeanUtils.copyProperties(eventRequestDTO, event, "id");
 
             eventRepository.save(event);
         } catch (Exception e) {
