@@ -15,7 +15,7 @@ spring:
         - id: notification
           uri: http://localhost:8083
           predicates:
-            - Path=/notification/**
+            - Path=/ws/**
         - id: payment
           uri: http://localhost:8084
           predicates:
@@ -26,3 +26,6 @@ spring:
             - Path=/user/**
 server:
   port: 8090
+
+jwt:
+  secret: SECRETKEY64ASDASDSADASDSADSADASDASDSADASSDASDASDASDASDASDAD

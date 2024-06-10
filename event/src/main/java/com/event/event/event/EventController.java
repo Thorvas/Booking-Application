@@ -1,12 +1,11 @@
 package com.event.event.event;
 
-import com.example.dto.EventRequestDTO;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +18,7 @@ public class EventController {
     private EventService eventService;
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<EventDTO>> getEvents(){
+    public ResponseEntity<List<EventDTO>> getEvents() {
 
         List<EventDTO> event = eventService.getAllEvents();
 
@@ -35,25 +34,25 @@ public class EventController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EventDTO> createEvent(@RequestBody EventDTO eventDTO) {
+    public ResponseEntity<EventDTO> createEvent(@RequestBody EventDTO eventDTO, @AuthenticationPrincipal Jwt jwt) {
 
-        EventDTO event = eventService.createEvent(eventDTO);
+        EventDTO event = eventService.createEvent(eventDTO, jwt);
 
         return new ResponseEntity<>(event, HttpStatus.OK);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EventDTO> updateEvent(@PathVariable Long id, @RequestBody EventDTO eventDTO) {
+    public ResponseEntity<EventDTO> updateEvent(@PathVariable Long id, @RequestBody EventDTO eventDTO, @AuthenticationPrincipal Jwt jwt) {
 
-        EventDTO event = eventService.updateEvent(eventDTO, id);
+        EventDTO event = eventService.updateEvent(eventDTO, id, jwt);
 
         return new ResponseEntity<>(event, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EventDTO> deleteEvent(@PathVariable Long id) {
+    public ResponseEntity<EventDTO> deleteEvent(@PathVariable Long id, @AuthenticationPrincipal Jwt jwt) {
 
-        EventDTO event = eventService.deleteEvent(id);
+        EventDTO event = eventService.deleteEvent(id, jwt);
 
         return new ResponseEntity<>(event, HttpStatus.OK);
     }

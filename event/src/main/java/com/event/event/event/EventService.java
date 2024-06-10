@@ -3,6 +3,7 @@ package com.event.event.event;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,9 +33,7 @@ public class EventService {
         return convertToDTO(event);
     }
 
-    public EventDTO deleteEvent(Long id) {
-
-        EventModel event = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException("Event not found."));
+    public EventDTO deleteAndConvertEvent(EventModel event) {
 
         eventRepository.delete(event);
         propagateEventDeleted(event);
@@ -42,9 +41,18 @@ public class EventService {
         return convertToDTO(event);
     }
 
-    public EventDTO createEvent(EventDTO eventDTO) {
+    public EventDTO deleteEvent(Long id, Jwt jwt) {
+
+        EventModel event = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException("Event not found."));
+
+        return event.getAuthorId().equals(Long.valueOf(jwt.getSubject())) ?
+                deleteAndConvertEvent(event) : throwException("You are not an author of event");
+    }
+
+    public EventDTO createEvent(EventDTO eventDTO, Jwt jwt) {
 
         EventModel event = convertToEvent(eventDTO);
+        event.setAuthorId(Long.valueOf(jwt.getSubject()));
 
         event = eventRepository.save(event);
         propagateEventCreated(event);
@@ -52,17 +60,26 @@ public class EventService {
         return convertToDTO(event);
     }
 
-    public EventDTO updateEvent(EventDTO EventDTO, Long id) {
+    public EventDTO throwException(String message) {
+        throw new RuntimeException(message);
+    }
+    public EventDTO updateAndConvertEvent(EventDTO eventDTO, EventModel event) {
 
-        EventModel event = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException("Event not found."));
-
-        event.setDate(EventDTO.getDate());
-        event.setName(EventDTO.getName());
+        event.setDate(eventDTO.getDate());
+        event.setName(eventDTO.getName());
 
         event = eventRepository.save(event);
         propagateEventUpdated(event);
 
         return convertToDTO(event);
+    }
+
+    public EventDTO updateEvent(EventDTO eventDTO, Long id, Jwt jwt) {
+
+        EventModel event = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException("Event not found."));
+
+        return event.getAuthorId().equals(Long.valueOf(jwt.getSubject())) ?
+                updateAndConvertEvent(eventDTO, event) : throwException("You are not an author of event");
     }
 
     public void propagateEventDeleted(EventModel event) {
