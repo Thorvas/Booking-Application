@@ -1,11 +1,12 @@
 package com.booking.booking.booking;
 
-import com.booking.booking.event.Event;
 import com.booking.booking.event.EventDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class BookingController {
     private BookingService bookingService;
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<BookingDTO>> getBookings(){
+    public ResponseEntity<List<BookingDTO>> getBookings() {
 
         List<BookingDTO> booking = bookingService.getAllBookings();
 
@@ -42,25 +43,25 @@ public class BookingController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BookingDTO> createBooking(@RequestBody BookingDTO bookingDTO) {
+    public ResponseEntity<BookingDTO> createBooking(@RequestBody BookingDTO bookingDTO, @AuthenticationPrincipal Jwt jwt) {
 
-        BookingDTO booking = bookingService.createBooking(bookingDTO);
+        BookingDTO booking = bookingService.createBooking(bookingDTO, jwt);
 
         return new ResponseEntity<>(booking, HttpStatus.OK);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BookingDTO> updateBooking(@PathVariable Long id, @RequestBody BookingDTO bookingDTO) {
+    public ResponseEntity<BookingDTO> updateBooking(@PathVariable Long id, @RequestBody BookingDTO bookingDTO, @AuthenticationPrincipal Jwt jwt) {
 
-        BookingDTO booking = bookingService.updateBooking(bookingDTO, id);
+        BookingDTO booking = bookingService.updateBooking(bookingDTO, id, jwt);
 
         return new ResponseEntity<>(booking, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BookingDTO> deleteBooking(@PathVariable Long id) {
+    public ResponseEntity<BookingDTO> deleteBooking(@PathVariable Long id, @AuthenticationPrincipal Jwt jwt) {
 
-        BookingDTO booking = bookingService.deleteBooking(id);
+        BookingDTO booking = bookingService.deleteBooking(id, jwt);
 
         return new ResponseEntity<>(booking, HttpStatus.OK);
     }

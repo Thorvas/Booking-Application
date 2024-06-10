@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,6 +35,27 @@ public class BookingService {
                 .toList();
     }
 
+    public BookingDTO updateAndConvertBooking(BookingModel booking, BookingDTO bookingDTO) {
+
+        BeanUtils.copyProperties(bookingDTO, booking, "id");
+
+        bookingRepository.save(booking);
+        propagateBookingUpdated(booking);
+        return convertToDTO(booking);
+    }
+
+    public BookingDTO deleteAndConvertBooking(BookingModel booking) {
+
+        bookingRepository.delete(booking);
+        propagateBookingDeleted(booking);
+
+        return convertToDTO(booking);
+    }
+
+    public BookingDTO throwException(String message) {
+        throw new RuntimeException(message);
+    }
+
     public BookingDTO getBooking(Long id) {
 
         BookingModel booking = bookingRepository.findById(id).orElseThrow(() -> new BookingNotFoundException("Booking not found."));
@@ -41,14 +63,12 @@ public class BookingService {
         return convertToDTO(booking);
     }
 
-    public BookingDTO deleteBooking(Long id) {
+    public BookingDTO deleteBooking(Long id, Jwt jwt) {
 
         BookingModel booking = bookingRepository.findById(id).orElseThrow(() -> new BookingNotFoundException("Booking not found."));
 
-        bookingRepository.delete(booking);
-        propagateBookingDeleted(booking);
-
-        return convertToDTO(booking);
+        return booking.getOwnerId().equals(Long.valueOf(jwt.getSubject())) ?
+                deleteAndConvertBooking(booking) : throwException("You are not an owner of booking.");
     }
 
     public EventDTO getEventForBooking(Long bookingId) {
@@ -64,12 +84,13 @@ public class BookingService {
         return eventDTO;
     }
 
-    public BookingDTO createBooking(BookingDTO bookingDTO) {
+    public BookingDTO createBooking(BookingDTO bookingDTO, Jwt jwt) {
 
         BookingModel bookingModel = convertToBooking(bookingDTO);
         Event event = eventRepository.findById(bookingModel.getEventId()).orElseThrow(() -> new EventNotFoundException("No such event exists"));
 
         bookingModel.setBookingStatus(BookingStatus.PENDING);
+        bookingModel.setOwnerId(Long.valueOf(jwt.getSubject()));
         bookingModel.setEventId(event.getId());
 
         bookingModel = bookingRepository.save(bookingModel);
@@ -79,16 +100,12 @@ public class BookingService {
 
     }
 
-    public BookingDTO updateBooking(BookingDTO bookingDTO, Long id) {
+    public BookingDTO updateBooking(BookingDTO bookingDTO, Long id, Jwt jwt) {
 
         BookingModel booking = bookingRepository.findById(id).orElseThrow(() -> new BookingNotFoundException("Booking not found."));
 
-        BeanUtils.copyProperties(bookingDTO, booking, "id");
-
-        bookingRepository.save(booking);
-        propagateBookingUpdated(booking);
-
-        return convertToDTO(booking);
+        return booking.getOwnerId().equals(Long.valueOf(jwt.getSubject())) ?
+                updateAndConvertBooking(booking, bookingDTO) : throwException("You are not owner of the booking.");
     }
 
     public void propagateBookingCreated(BookingModel booking) {

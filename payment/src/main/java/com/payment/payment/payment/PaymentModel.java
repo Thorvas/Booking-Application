@@ -16,6 +16,8 @@ public class PaymentModel {
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 
+    private Long ownerId;
+
     private Long amount;
 
 }
