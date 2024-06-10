@@ -1,6 +1,11 @@
 package com.user.user.user;
 
+import com.user.user.jwt.JwtTokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,48 +16,49 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtTokenUtils jwtTokenUtils;
+
+    @Autowired
+    private AuthenticationManager authManager;
+
     public List<UserDTO> getAllUsers() {
 
         return userRepository.findAll().stream()
-                .map(userModel -> convertToDTO(userModel))
+                .map(this::convertToDTO)
                 .toList();
     }
 
-    public UserDTO getUser(Long id) {
+    public UserDTO register(UserDTO userDTO) {
 
-        UserModel user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found."));
+        userRepository.findByUsername(userDTO.getUsername()).ifPresent(
+                (user) -> {
+                    throw new RuntimeException("User already exists");
+                });
 
-        return convertToDTO(user);
-    }
-
-    public UserDTO deleteUser(Long id) {
-
-        UserModel user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found."));
-
-        userRepository.delete(user);
+        userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        UserModel user = userRepository.save(convertToUser(userDTO));
 
         return convertToDTO(user);
-    }
-
-    public UserDTO createUser(UserDTO userDTO) {
-
-        UserModel userModel = convertToUser(userDTO);
-
-        userRepository.save(userModel);
-
-        return convertToDTO(userModel);
 
     }
 
-    public UserDTO updateUser(UserDTO userDTO, Long id) {
+    public String login(UserDTO userDTO) {
 
-        UserModel user = userRepository.findById(id).orElseThrow( () -> new UserNotFoundException("User not found."));
+        UserModel userModel = userRepository.findByUsername(userDTO.getUsername()).orElseThrow(() -> new RuntimeException("No such user exists!"));
 
-        user.setNickname(userDTO.getNickname());
+        try {
+            authManager.authenticate(new UsernamePasswordAuthenticationToken(userDTO.getUsername(), userDTO.getPassword()));
+        }
+        catch (BadCredentialsException e) {
+            throw new RuntimeException("Login unsuccessful");
+        }
 
-        userRepository.save(user);
+        return jwtTokenUtils.generateToken(userModel.getId());
 
-        return convertToDTO(user);
     }
 
     private UserDTO convertToDTO(UserModel userModel) {
@@ -60,7 +66,8 @@ public class UserService {
         UserDTO userDTO = new UserDTO();
 
         userDTO.setId(userModel.getId());
-        userDTO.setNickname(userModel.getNickname());
+        userDTO.setUsername(userModel.getUsername());
+        userDTO.setPassword(userModel.getPassword());
 
         return userDTO;
     }
@@ -69,7 +76,8 @@ public class UserService {
 
         UserModel userModel = new UserModel();
 
-        userModel.setNickname(userDTO.getNickname());
+        userModel.setUsername(userDTO.getUsername());
+        userModel.setPassword(userDTO.getPassword());
 
         return userModel;
     }

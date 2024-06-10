@@ -10,7 +10,11 @@ public class BookingModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private String date;
+    private Long eventId;
+    private Long ownerId;
+    private Integer ticketAmount;
+    private Integer totalPrice;
+    @Enumerated(EnumType.STRING)
+    private BookingStatus bookingStatus;
 
 }

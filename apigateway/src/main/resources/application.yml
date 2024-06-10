@@ -3,36 +3,29 @@ spring:
     name: api-gateway
   cloud:
     gateway:
-      discovery:
-        locator:
-          enabled: true
       routes:
         - id: booking
-          uri: lb://booking
+          uri: http://localhost:8081
           predicates:
             - Path=/booking/**
         - id: event
-          uri: lb://event
+          uri: http://localhost:8082
           predicates:
             - Path=/event/**
         - id: notification
-          uri: lb://notification
+          uri: http://localhost:8083
           predicates:
-            - Path=/notification/**
+            - Path=/ws/**
         - id: payment
-          uri: lb://payment
+          uri: http://localhost:8084
           predicates:
             - Path=/payment/**
         - id: user
-          uri: lb://user
+          uri: http://localhost:8085
           predicates:
             - Path=/user/**
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
-  instance:
-    prefer-ip-address: true
-
 server:
   port: 8090
+
+jwt:
+  secret: SECRETKEY64ASDASDSADASDSADSADASDASDSADASSDASDASDASDASDASDAD

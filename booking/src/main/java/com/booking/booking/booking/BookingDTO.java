@@ -6,6 +6,10 @@ import lombok.Data;
 public class BookingDTO {
 
     private Long id;
-    private String name;
-    private String date;
+    private Long eventId;
+    private Long ownerId;
+    private Integer ticketAmount;
+    private Integer totalPrice;
+    private BookingStatus bookingStatus;
+
 }

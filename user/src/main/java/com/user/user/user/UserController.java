@@ -23,35 +23,19 @@ public class UserController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
+    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserDTO> register(@RequestBody UserDTO userDTO) {
 
-        UserDTO user = userService.getUser(id);
-
-        return new ResponseEntity<>(user, HttpStatus.OK);
-    }
-
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
-
-        UserDTO user = userService.createUser(userDTO);
+        UserDTO user = userService.register(userDTO);
 
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+    @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> login(@RequestBody UserDTO userDTO) {
 
-        UserDTO user = userService.updateUser(userDTO, id);
+        String token = userService.login(userDTO);
 
-        return new ResponseEntity<>(user, HttpStatus.OK);
-    }
-
-    @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UserDTO> deleteUser(@PathVariable Long id) {
-
-        UserDTO user = userService.deleteUser(id);
-
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<>(token, HttpStatus.OK);
     }
 }

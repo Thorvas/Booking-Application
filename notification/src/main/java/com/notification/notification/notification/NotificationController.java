@@ -1,39 +1,48 @@
 package com.notification.notification.notification;
 
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/notification")
+@RequestMapping("/ws")
 public class NotificationController {
 
-    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getNotifications(){
+    private final SimpMessagingTemplate messagingTemplate;
 
-        return "Get all my bookings.";
+    public NotificationController(SimpMessagingTemplate messagingTemplate) {
+        this.messagingTemplate = messagingTemplate;
     }
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String getNotification(@PathVariable Long id) {
+    @GetMapping("/send")
+    public String sendTestNotification(HttpServletRequest request, @RequestParam String username, @RequestParam String message) {
 
-        return "Return specific booking.";
+        messagingTemplate.convertAndSendToUser("2", "/queue/notifications", new NotificationMessage(message));
+
+        return "Message sent!";
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String createNotification(@RequestBody NotificationDTO notificationDTO) {
+    // Klasa wiadomości
+    public static class NotificationMessage {
+        private String content;
 
-        return "Create specific booking";
-    }
+        public NotificationMessage() {
+        }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String updateNotification(@PathVariable Long id, @RequestBody NotificationDTO notificationDTO) {
+        public NotificationMessage(String content) {
+            this.content = content;
+        }
 
-        return "Update specific booking";
-    }
+        public String getContent() {
+            return content;
+        }
 
-    @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String deleteNotification(@PathVariable Long id) {
-
-        return "Delete specific booking";
+        public void setContent(String content) {
+            this.content = content;
+        }
     }
 }
+

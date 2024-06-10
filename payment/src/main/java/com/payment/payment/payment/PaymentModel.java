@@ -1,9 +1,6 @@
 package com.payment.payment.payment;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -14,6 +11,13 @@ public class PaymentModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long bookingId;
+
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus;
+
+    private Long ownerId;
+
     private Long amount;
-    private String title;
+
 }

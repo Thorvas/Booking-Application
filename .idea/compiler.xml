@@ -8,22 +8,30 @@
         <outputRelativeToContentRoot value="true" />
         <module name="apigateway" />
         <module name="notification" />
-        <module name="server" />
         <module name="booking" />
         <module name="payment" />
         <module name="event" />
         <module name="user" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="apigateway (1)" target="17" />
+      <module name="apigateway (2)" target="17" />
+      <module name="server" target="17" />
+      <module name="shared-dto" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="apigateway" options="-parameters" />
+      <module name="apigateway (1)" options="-parameters" />
+      <module name="apigateway (2)" options="-parameters" />
       <module name="booking" options="-parameters" />
       <module name="event" options="-parameters" />
       <module name="notification" options="-parameters" />
       <module name="payment" options="-parameters" />
       <module name="server" options="-parameters" />
+      <module name="shared-dto" options="" />
       <module name="user" options="-parameters" />
     </option>
   </component>
