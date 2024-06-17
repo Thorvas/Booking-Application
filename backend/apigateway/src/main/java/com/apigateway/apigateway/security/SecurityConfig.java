@@ -23,6 +23,7 @@ public class SecurityConfig {
     public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.disable())
                 .authorizeExchange(request -> request
                         .pathMatchers("/user/**", "/ws/**", "/notification/**").permitAll()
                         .anyExchange().authenticated())
@@ -33,9 +34,7 @@ public class SecurityConfig {
 
     @Bean
     public ReactiveJwtDecoder reactiveJwtDecoder() {
-        String secretKey = Base64.getEncoder().encodeToString(jwtSecret.getBytes());
-        byte[] decodedKey = Base64.getDecoder().decode(secretKey);
-        SecretKeySpec keySpec = new SecretKeySpec(decodedKey, "HmacSHA256");
+        SecretKeySpec keySpec = new SecretKeySpec(jwtSecret.getBytes(), "HmacSHA256");
         return NimbusReactiveJwtDecoder.withSecretKey(keySpec).build();
     }
 }

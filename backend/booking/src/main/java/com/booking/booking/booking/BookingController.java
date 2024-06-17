@@ -17,7 +17,7 @@ public class BookingController {
 
     @Autowired
     private BookingService bookingService;
-
+    
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<BookingDTO>> getBookings() {
 

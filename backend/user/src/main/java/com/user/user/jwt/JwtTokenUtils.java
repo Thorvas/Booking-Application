@@ -20,7 +20,7 @@ public class JwtTokenUtils {
                 .subject(id.toString())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
-                .signWith(SignatureAlgorithm.HS256, Base64.getEncoder().encodeToString(jwtSecret.getBytes()))
+                .signWith(SignatureAlgorithm.HS256, jwtSecret.getBytes())
                 .compact();
     }
 }
