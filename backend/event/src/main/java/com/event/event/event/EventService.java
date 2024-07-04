@@ -1,5 +1,6 @@
 package com.event.event.event;
 
+import com.event.event.notification.NotificationDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -35,8 +36,14 @@ public class EventService {
 
     public EventDTO deleteAndConvertEvent(EventModel event) {
 
+        NotificationDTO notificationDTO = NotificationDTO.builder()
+                        .userId(event.getAuthorId())
+                                .message("Event has been deleted.")
+                                        .build();
+
         eventRepository.delete(event);
         propagateEventDeleted(event);
+        propagateNotification(notificationDTO, "notification_created");
 
         return convertToDTO(event);
     }
@@ -55,7 +62,13 @@ public class EventService {
         event.setAuthorId(Long.valueOf(jwt.getSubject()));
 
         event = eventRepository.save(event);
+
+        NotificationDTO notificationDTO = NotificationDTO.builder()
+                        .userId(event.getAuthorId())
+                                .message("Event has been created.")
+                                        .build();
         propagateEventCreated(event);
+        propagateNotification(notificationDTO, "notification_created");
 
         return convertToDTO(event);
     }
@@ -65,11 +78,17 @@ public class EventService {
     }
     public EventDTO updateAndConvertEvent(EventDTO eventDTO, EventModel event) {
 
+        NotificationDTO notificationDTO = NotificationDTO.builder()
+                        .userId(eventDTO.getAuthorId())
+                                .message("Your event has been updated")
+                                        .build();
         event.setDate(eventDTO.getDate());
         event.setName(eventDTO.getName());
+        event.setDescription(eventDTO.getDescription());
 
         event = eventRepository.save(event);
         propagateEventUpdated(event);
+        propagateNotification(notificationDTO, "notification_created");
 
         return convertToDTO(event);
     }
@@ -86,6 +105,14 @@ public class EventService {
         propagate(event, "event_deleted");
     }
 
+    public void propagateNotification(NotificationDTO notification, String topic) {
+        try {
+            String request = objectMapper.writeValueAsString(notification);
+            kafkaTemplate.send(topic, request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public void propagateEventCreated(EventModel event) {
         propagate(event, "event_created");
     }
@@ -111,6 +138,7 @@ public class EventService {
         eventDTO.setId(eventModel.getId());
         eventDTO.setDate(eventModel.getDate());
         eventDTO.setName(eventModel.getName());
+        eventDTO.setDescription(eventModel.getDescription());
         eventDTO.setAuthorId(eventModel.getAuthorId());
 
         return eventDTO;
@@ -122,6 +150,7 @@ public class EventService {
 
         eventModel.setDate(eventDTO.getDate());
         eventModel.setName(eventDTO.getName());
+        eventModel.setDescription(eventDTO.getDescription());
         eventModel.setAuthorId(eventDTO.getAuthorId());
 
         return eventModel;

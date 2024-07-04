@@ -4,6 +4,7 @@ import com.booking.booking.booking.BookingModel;
 import com.booking.booking.booking.BookingNotFoundException;
 import com.booking.booking.booking.BookingRepository;
 import com.booking.booking.booking.BookingStatus;
+import com.booking.booking.notification.NotificationDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -31,6 +32,13 @@ public class PaymentService {
 
             bookingModel.setBookingStatus(PaymentStatus.ACCEPTED.equals(paymentDTO.getPaymentStatus()) ? BookingStatus.CONFIRMED : BookingStatus.REJECTED);
             bookingRepository.save(bookingModel);
+
+            NotificationDTO notificationRequest = NotificationDTO.builder()
+                    .message(bookingModel.getBookingStatus().equals(PaymentStatus.ACCEPTED) ? "Payment accepted." : "Payment rejected.")
+                    .userId(bookingModel.getOwnerId())
+                    .build();
+
+            kafkaTemplate.send("notification_created", objectMapper.writeValueAsString(notificationRequest));
 
         } catch (Exception e) {
             e.printStackTrace();

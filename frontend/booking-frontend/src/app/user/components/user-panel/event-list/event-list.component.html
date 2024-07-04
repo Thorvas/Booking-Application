@@ -1,0 +1,13 @@
+<p>Event list:</p>
+
+<div>
+    <h2>Available events</h2>
+    <ul>
+        <li *ngFor="let event of eventList">
+            <h3>{{event.name}}</h3>
+            <h4>{{event.description}}</h4>
+            <h4>{{event.date}}</h4>
+            <button (click)="bookEvent(event)">Book an event</button>
+        </li>
+    </ul>
+</div>

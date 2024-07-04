@@ -32,9 +32,9 @@ public class UserController {
     }
 
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> login(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<UserToken> login(@RequestBody UserDTO userDTO) {
 
-        String token = userService.login(userDTO);
+        UserToken token = userService.login(userDTO);
 
         return new ResponseEntity<>(token, HttpStatus.OK);
     }

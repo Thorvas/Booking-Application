@@ -46,7 +46,7 @@ public class UserService {
 
     }
 
-    public String login(UserDTO userDTO) {
+    public UserToken login(UserDTO userDTO) {
 
         UserModel userModel = userRepository.findByUsername(userDTO.getUsername()).orElseThrow(() -> new RuntimeException("No such user exists!"));
 
@@ -57,7 +57,9 @@ public class UserService {
             throw new RuntimeException("Login unsuccessful");
         }
 
-        return jwtTokenUtils.generateToken(userModel.getId());
+        return UserToken.builder()
+                .token(jwtTokenUtils.generateToken(userModel.getId()))
+                .build();
 
     }
 

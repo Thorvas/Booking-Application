@@ -25,7 +25,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.disable())
                 .authorizeExchange(request -> request
-                        .pathMatchers("/user/**", "/ws/**", "/notification/**").permitAll()
+                        .pathMatchers("/user/**", "booking/**", "/event/**", "/ws/**", "/notification/**").permitAll()
                         .anyExchange().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt ->
                         jwt.jwtDecoder(reactiveJwtDecoder())))

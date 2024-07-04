@@ -20,6 +20,9 @@ public class Event {
     private Long id;
     private Long authorId;
     private String name;
+    private String description;
+    private Integer ticketPricePerTicket;
+    private Integer ticketNumber;
     @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime date;
