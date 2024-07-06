@@ -85,6 +85,7 @@ public class EventService {
         event.setDate(eventDTO.getDate());
         event.setName(eventDTO.getName());
         event.setDescription(eventDTO.getDescription());
+        event.setTicketPricePerTicket(eventDTO.getTicketPricePerTicket());
 
         event = eventRepository.save(event);
         propagateEventUpdated(event);
@@ -137,6 +138,7 @@ public class EventService {
 
         eventDTO.setId(eventModel.getId());
         eventDTO.setDate(eventModel.getDate());
+        eventDTO.setTicketPricePerTicket(eventModel.getTicketPricePerTicket());
         eventDTO.setName(eventModel.getName());
         eventDTO.setDescription(eventModel.getDescription());
         eventDTO.setAuthorId(eventModel.getAuthorId());
@@ -150,6 +152,7 @@ public class EventService {
 
         eventModel.setDate(eventDTO.getDate());
         eventModel.setName(eventDTO.getName());
+        eventModel.setTicketPricePerTicket(eventDTO.getTicketPricePerTicket());
         eventModel.setDescription(eventDTO.getDescription());
         eventModel.setAuthorId(eventDTO.getAuthorId());
 

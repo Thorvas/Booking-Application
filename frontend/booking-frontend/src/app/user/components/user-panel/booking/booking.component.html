@@ -1,0 +1,9 @@
+<form [formGroup]="bookingForm" (ngSubmit)="onSubmit()">
+    <div>
+        <label for="ticketAmount">Ticket Amount</label>
+        <input id="ticketAmount" formControlName="ticketAmount" type="number">
+    </div>
+    <div>
+        <button type="submit" [disabled]="!bookingForm.valid">Submit</button>
+    </div>
+</form>

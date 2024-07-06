@@ -15,4 +15,9 @@ export class EventListService {
   getEvents(): Observable<Events[]> {
     return this.http.get<Events[]>(this.apiUrl);
   }
+
+  getSpecificEvent(eventId: number): Observable<Events> {
+    const url = `${this.apiUrl}/${eventId}`;
+    return this.http.get<Events>(url);
+  }
 }
