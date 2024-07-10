@@ -2,37 +2,38 @@ import { Injectable } from '@angular/core';
 import { User } from './user';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { CookieService } from 'ngx-cookie-service';
+import jwt_decode from "jwt-decode";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  loggedUser!: User | null;
-
   apiUrl: string = "http://localhost:8090/user/current";
   
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient, private cookieService: CookieService) { }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
+    return !!this.getToken();
   }
 
   login(token: string): void {
-    localStorage.setItem('token', token);
-    this.loggedUser = {
-      name: "John",
-      surname: "Doe"
-    }
+    this.cookieService.set('token', token, {path: '/', 
+      secure: true, 
+      sameSite: 'Strict',
+      expires: new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000)});
+  }
 
-    console.log(this.loggedUser);
+  getToken(): string | null {
+    return this.cookieService.get('token');
   }
 
   logout(): void {
-    localStorage.removeItem('token');
+    this.cookieService.delete('token', '/');
   }
 
-  retrieveUser(): Observable<any> {
-    return this.http.get(this.apiUrl);
+  retrieveUser(token: string) {
+    return jwt_decode(token);
   }
 }
