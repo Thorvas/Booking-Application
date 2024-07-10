@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +21,13 @@ public class UserController {
     public ResponseEntity<List<UserDTO>> getUsers(){
 
         List<UserDTO> user = userService.getAllUsers();
+
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/current", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UserDTO> getUser(@AuthenticationPrincipal Jwt jwt) {
+        UserDTO user = userService.getUser(jwt);
 
         return new ResponseEntity<>(user, HttpStatus.OK);
     }

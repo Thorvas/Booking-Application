@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from './user/services/auth-service';
 import { Router } from '@angular/router';
 
@@ -7,9 +7,18 @@ import { Router } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
   constructor(public authService: AuthService, private router: Router) { }
+  ngOnInit(): void {
+    if (this.authService.isLoggedIn()) {
+      console.log("You are logged");
+      this.router.navigate(['/user-panel']);
+    } else {
+      console.log("You are not logged");
+      this.router.navigate(['/login']);
+    }
+  }
 
   logout() {
     this.authService.logout();

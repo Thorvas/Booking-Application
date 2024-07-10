@@ -142,6 +142,7 @@ public class EventService {
         eventDTO.setName(eventModel.getName());
         eventDTO.setDescription(eventModel.getDescription());
         eventDTO.setAuthorId(eventModel.getAuthorId());
+        eventDTO.setMaxTickets(eventModel.getMaxTickets());
 
         return eventDTO;
     }
@@ -155,6 +156,7 @@ public class EventService {
         eventModel.setTicketPricePerTicket(eventDTO.getTicketPricePerTicket());
         eventModel.setDescription(eventDTO.getDescription());
         eventModel.setAuthorId(eventDTO.getAuthorId());
+        eventModel.setMaxTickets(eventDTO.getMaxTickets());
 
         return eventModel;
     }

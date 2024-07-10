@@ -1,0 +1,28 @@
+<h2>Create your own event</h2>
+
+<form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+    <label for="name">Event name</label>
+    <input id="name" formControlName="name" type="text">
+    <br>
+
+
+    <label for="description">Event description</label>
+    <input id="description" formControlName="description" type="text">
+    <br>
+
+    <label for="date">Event date</label>
+    <input id="date" formControlName="date" type="date">
+    <br>
+
+    <label for="ticketPricePerTicket">Ticket price per ticket</label>
+    <input id="ticketPricePerTicket" formControlName="ticketPricePerTicket" type="number">
+    <br>
+
+    <label for="maxTickets">Maximum amount of tickets</label>
+    <input id="maxTickets" formControlName="maxTickets" type="number">
+    <br>
+
+    <button type="submit" [disabled]="!eventForm.valid">Submit</button>
+
+
+</form>

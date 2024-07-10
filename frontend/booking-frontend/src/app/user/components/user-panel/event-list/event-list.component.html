@@ -5,13 +5,12 @@
     <div [formGroup]="getEventForm(i)">
         <h2>{{event.name}}</h2>
         <p>{{event.description}}</p>
-        <p>Available tickets: {{event.ticketNumber}}</p>
+        <p>Available tickets: {{event.maxTickets}}</p>
 
         <label for="ticketAmount-{{i}}">Ticket amount</label>
-        <input id="ticketAmount-{{i}}" formControlName="ticketAmount" type="number">
+        <input id="ticketAmount-{{i}}" formControlName="ticketAmount" type="number" [min]="0" [max]="event.maxTickets">
         <br>
-        <label for="totalPrice-{{i}}">Total price</label>
-        <input id="totalPrice-{{i}}" formControlName="totalPrice" type="number" [disabled]="true">
+        <p id="totalPrice-{{i}}">Total price: {{getEventForm(i).get('totalPrice')?.value}}</p>
         <br>
         <button (click)="bookEvent(event, i)" [disabled]="!getEventForm(i).valid">Book Now!</button>
 

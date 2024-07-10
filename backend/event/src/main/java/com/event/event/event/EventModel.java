@@ -9,7 +9,6 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -19,12 +18,13 @@ public class EventModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long authorId;
+    private Integer maxTickets;
     private String name;
     private String description;
     private Integer ticketPricePerTicket;
-    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-    private LocalDateTime date;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private LocalDate date;
 
 
 }

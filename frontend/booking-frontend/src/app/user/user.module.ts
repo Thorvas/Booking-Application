@@ -8,7 +8,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { LoginComponent } from './components/login/login.component';
 import { UserPanelComponent } from './components/user-panel/user-panel.component';
 import { EventListComponent } from './components/user-panel/event-list/event-list.component';
-import { BookingComponent } from './components/user-panel/booking/booking.component';
+import { EventComponent } from './components/user-panel/event/event.component';
 import { ReactiveFormsModule } from '@angular/forms';
 
 
@@ -18,7 +18,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     LoginComponent,
     UserPanelComponent,
     EventListComponent,
-    BookingComponent
+    EventComponent
   ],
   imports: [
     FormsModule,
@@ -28,8 +28,6 @@ import { ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule
   ],
   exports: [
-    RegisterComponent,
-    LoginComponent
   ]
 })
 export class UserModule { }

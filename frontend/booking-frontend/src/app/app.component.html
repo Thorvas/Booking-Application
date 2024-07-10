@@ -2,6 +2,7 @@
 <nav>
     <li *ngIf="!authService.isLoggedIn()"><a routerLink="/login">Login</a></li>
     <li *ngIf="!authService.isLoggedIn()"><a routerLink="/register">Register</a></li>
+    <li *ngIf="authService.isLoggedIn()"><a routerLink="/create-event">Create an event</a></li>
     <li *ngIf="authService.isLoggedIn()"><a routerLink="/user-panel">User Panel</a></li>
     <li *ngIf="authService.isLoggedIn()"><a (click)="logout()">Logout</a></li>
 </nav>

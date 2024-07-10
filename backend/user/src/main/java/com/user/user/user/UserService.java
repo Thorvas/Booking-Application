@@ -6,6 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,6 +31,17 @@ public class UserService {
         return userRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .toList();
+    }
+
+    public UserDTO throwException(String message) {
+        throw new RuntimeException(message);
+    }
+
+    public UserDTO getUser(Jwt jwt) {
+
+        UserModel user = userRepository.findById(Long.valueOf(jwt.getSubject())).orElseThrow(() -> new RuntimeException("No user found."));
+
+        return user.getId().equals(Long.valueOf(jwt.getSubject())) ? convertToDTO(user) : throwException("You are requesting a wrong user.");
     }
 
     public UserDTO register(UserDTO userDTO) {
@@ -58,7 +70,7 @@ public class UserService {
         }
 
         return UserToken.builder()
-                .token(jwtTokenUtils.generateToken(userModel.getId()))
+                .token(jwtTokenUtils.generateToken(userModel))
                 .build();
 
     }
@@ -70,6 +82,8 @@ public class UserService {
         userDTO.setId(userModel.getId());
         userDTO.setUsername(userModel.getUsername());
         userDTO.setPassword(userModel.getPassword());
+        userDTO.setName(userModel.getName());
+        userDTO.setSurname(userModel.getSurname());
 
         return userDTO;
     }
@@ -80,6 +94,8 @@ public class UserService {
 
         userModel.setUsername(userDTO.getUsername());
         userModel.setPassword(userDTO.getPassword());
+        userModel.setName(userDTO.getName());
+        userModel.setSurname(userDTO.getSurname());
 
         return userModel;
     }

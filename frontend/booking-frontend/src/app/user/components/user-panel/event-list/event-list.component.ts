@@ -5,6 +5,7 @@ import { BookingService } from 'src/app/user/services/booking.service';
 import { Router } from '@angular/router';
 import { EventService } from 'src/app/user/services/event.service';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { maxTicketValidator } from 'src/app/user/services/max-ticket-validator';
 
 @Component({
   selector: 'app-event-list',
@@ -34,7 +35,7 @@ export class EventListComponent implements OnInit {
   initEventForms(): void { 
     this.eventList.forEach(event => {
       const eventForm = this.fb.group({
-        ticketAmount: [0, [Validators.required, Validators.min(1)]],
+        ticketAmount: [0, [Validators.required, Validators.min(1), maxTicketValidator(event.maxTickets)]],
         totalPrice: [{value: 0, disabled: true}]
       });
 

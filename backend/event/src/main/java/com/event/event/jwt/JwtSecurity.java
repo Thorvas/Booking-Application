@@ -37,9 +37,7 @@ public class JwtSecurity {
 
     @Bean
     public JwtDecoder reactiveJwtDecoder() {
-        String secretKey = Base64.getEncoder().encodeToString(jwtSecret.getBytes());
-        byte[] decodedKey = Base64.getDecoder().decode(secretKey);
-        SecretKeySpec keySpec = new SecretKeySpec(decodedKey, "HmacSHA256");
+        SecretKeySpec keySpec = new SecretKeySpec(jwtSecret.getBytes(), "HmacSHA256");
         return NimbusJwtDecoder.withSecretKey(keySpec).build();
     }
 }
